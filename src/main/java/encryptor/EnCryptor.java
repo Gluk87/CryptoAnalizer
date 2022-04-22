@@ -1,21 +1,18 @@
 package encryptor;
 
 import system.Crypto;
-
-import java.io.FileWriter;
 import java.io.IOException;
 
-public class EnCryptor extends Crypto {
+public class EnCryptor extends Crypto implements Encryptable {
 
     public EnCryptor(int key, String inPath, String outPath) {
         super(key, inPath, outPath);
     }
 
+    @Override
     public String enCrypt() throws IOException {
-        try(FileWriter writer = new FileWriter(getOutPath())) {
-            char[] buffer = readInBuffer(getInPath());
-            writer.write(getRightOffsetBuffer(buffer, getKey()));
-        }
-        return FILE_CREATED;
+        char[] buffer = readInBuffer(getInPath());
+        buffer = getRightOffsetBuffer(buffer, getKey());
+        return writeIntoFile(buffer);
     }
 }

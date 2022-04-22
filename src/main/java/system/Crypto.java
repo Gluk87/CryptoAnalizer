@@ -1,7 +1,9 @@
 package system;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public abstract class Crypto {
@@ -60,12 +62,19 @@ public abstract class Crypto {
     protected char[] readInBuffer(String path) throws IOException {
         char[] buffer = new char[65536];
         int real = 0;
-        try(FileReader reader = new FileReader(path)) {
+        try(FileReader reader = new FileReader(path, StandardCharsets.UTF_8)) {
             while (reader.ready()) {
                 real = reader.read(buffer);
             }
         }
         return Arrays.copyOfRange(buffer, 0, real);
+    }
+
+    protected String writeIntoFile(char[] buffer) throws IOException {
+        try(FileWriter writer = new FileWriter(getOutPath(), StandardCharsets.UTF_8)) {
+            writer.write(buffer);
+        }
+        return FILE_CREATED;
     }
 
     protected char[] getLeftOffsetBuffer(char[] buffer, int key) {

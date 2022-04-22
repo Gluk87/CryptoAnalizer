@@ -81,7 +81,7 @@ public class UserInterface extends JFrame {
 
         container.add(btnOpenDirStat);
         container.add(inDirStat);
-        btnOpenDirStat.addActionListener(new FileChooserListener());
+        btnOpenDirStat.addActionListener(new FileStatChooserListener());
         btnOpenDirStat.setVisible(false);
         inDirStat.setVisible(false);
 
@@ -99,6 +99,18 @@ public class UserInterface extends JFrame {
             int result = fileChooser.showOpenDialog(UserInterface.this);
             if (result == JFileChooser.APPROVE_OPTION ) {
                 inDir.setText(String.valueOf(fileChooser.getSelectedFile()));
+            }
+        }
+    }
+
+    class FileStatChooserListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            fileChooser.setDialogTitle(CHOOSE_DIR);
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            int result = fileChooser.showOpenDialog(UserInterface.this);
+            if (result == JFileChooser.APPROVE_OPTION ) {
+                inDirStat.setText(String.valueOf(fileChooser.getSelectedFile()));
             }
         }
     }
@@ -138,6 +150,7 @@ public class UserInterface extends JFrame {
     }
 
     class ButtonEventListener implements ActionListener {
+        @Override
         public void actionPerformed (ActionEvent e) {
             try {
                 if (radioButton1.isSelected()) {
@@ -184,5 +197,7 @@ public class UserInterface extends JFrame {
             return key;
         }
     }
+
+
 }
 

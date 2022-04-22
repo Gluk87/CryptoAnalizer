@@ -1,11 +1,9 @@
 package decryptor;
 
 import system.Crypto;
-
-import java.io.FileWriter;
 import java.io.IOException;
 
-public class DeCryptor extends Crypto {
+public class DeCryptor extends Crypto implements Decryptable {
 
     public DeCryptor(int key, String inPath, String outPath) {
         super(key, inPath, outPath);
@@ -19,11 +17,10 @@ public class DeCryptor extends Crypto {
         super(inPath, outPath);
     }
 
+    @Override
     public String deCrypt() throws IOException {
-        try(FileWriter writer = new FileWriter(getOutPath())) {
-            char[] buffer = readInBuffer(getInPath());
-            writer.write(getLeftOffsetBuffer(buffer, getKey()));
-        }
-        return FILE_CREATED;
+        char[] buffer = readInBuffer(getInPath());
+        buffer = getLeftOffsetBuffer(buffer, getKey());
+        return writeIntoFile(buffer);
     }
 }
