@@ -1,8 +1,10 @@
 package system;
 
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -60,19 +62,27 @@ public abstract class Crypto {
     }
 
     protected char[] readInBuffer(String path) throws IOException {
-        char[] buffer = new char[65536];
-        int real = 0;
-        try(FileReader reader = new FileReader(path, StandardCharsets.UTF_8)) {
-            while (reader.ready()) {
-                real = reader.read(buffer);
-            }
+        ByteBuffer byteBuffer;
+        String str;
+        try(RandomAccessFile randomAccessFile = new RandomAccessFile(path, "r");
+            FileChannel channel = randomAccessFile.getChannel()) {
+            byteBuffer = ByteBuffer.allocate((int) channel.size());
+            channel.read(byteBuffer);
+            StandardCharsets.UTF_8.decode(byteBuffer);
+            byteBuffer.flip();
+            str = new String(byteBuffer.array(), StandardCharsets.UTF_8);
         }
-        return Arrays.copyOfRange(buffer, 0, real);
+        return str.toCharArray();
     }
 
     protected String writeIntoFile(char[] buffer) throws IOException {
-        try(FileWriter writer = new FileWriter(getOutPath(), StandardCharsets.UTF_8)) {
-            writer.write(buffer);
+        CharBuffer charBuffer;
+        try(RandomAccessFile randomAccessFile = new RandomAccessFile(getOutPath(), "rw");
+            FileChannel channel = randomAccessFile.getChannel()) {
+            charBuffer = CharBuffer.allocate(buffer.length);
+            charBuffer.put(buffer);
+            charBuffer.flip();
+            channel.write(ByteBuffer.wrap(new String(buffer).getBytes(StandardCharsets.UTF_8)));
         }
         return FILE_CREATED;
     }
