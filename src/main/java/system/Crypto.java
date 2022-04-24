@@ -63,16 +63,16 @@ public abstract class Crypto {
 
     protected char[] readInBuffer(String path) throws IOException {
         ByteBuffer byteBuffer;
-        String str;
+        String stringBuffer;
         try(RandomAccessFile randomAccessFile = new RandomAccessFile(path, "r");
             FileChannel channel = randomAccessFile.getChannel()) {
             byteBuffer = ByteBuffer.allocate((int) channel.size());
             channel.read(byteBuffer);
             StandardCharsets.UTF_8.decode(byteBuffer);
             byteBuffer.flip();
-            str = new String(byteBuffer.array(), StandardCharsets.UTF_8);
+            stringBuffer = new String(byteBuffer.array(), StandardCharsets.UTF_8);
         }
-        return str.toCharArray();
+        return stringBuffer.toCharArray();
     }
 
     protected String writeIntoFile(char[] buffer) throws IOException {
